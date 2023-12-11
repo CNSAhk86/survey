@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>학업 중단 조짐 인지 및 예방 프로그램 사이트</title>
+  <link rel="icon" href="https://www.cnsa.hs.kr/images/hpw/intro/img_symbol.png" type="image/x-icon" sizes="10x32">
+  <!-- SweetAlert2 CDN 링크 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(45deg, #003366, #004080);
+      /* 그라데이션 배경 */
+      color: #b3e0ff;
+      /* 푸른 빛 텍스트 */
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    form {
+      background: linear-gradient(45deg, #4d94ff, #cce0ff);
+      /* 그라데이션 배경 */
+      border-radius: 12px;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      width: 90%;
+      max-width: 500px;
+      margin: 20px auto;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    h1 {
+      color: #0066cc;
+      /* 진한 파란색 제목 */
+      text-align: center;
+      margin: 0 0 20px;
+      font-size: 36px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      background: linear-gradient(45deg, #66b3ff, #0066cc);
+      /* 그라데이션 배경 */
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #003d7a;
+      /* 밝은 파란색 텍스트 */
+    }
+
+    select {
+      width: calc(100% - 20px);
+      padding: 14px;
+      margin: 8px 0 20px;
+      border: 1px solid #66b3ff;
+      /* 진한 파란색 테두리 */
+      border-radius: 8px;
+      font-size: 18px;
+      background-color: #b3e0ff;
+      /* 푸른 빛 배경 */
+      color: #004080;
+      /* 어두운 푸른 빛 텍스트 */
+      box-sizing: border-box;
+    }
+
+    input[type="submit"] {
+      background: linear-gradient(45deg, #004080, #0066cc);
+      /* 그라데이션 버튼 */
+      color: white;
+      padding: 18px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+      font-size: 20px;
+      transition: background 0.3s ease-in-out;
+    }
+
+    input[type="submit"]:hover {
+      background: linear-gradient(45deg, #00264d, #004080);
+      /* 어두운 그라데이션 호버 색상 */
+    }
+
+    /* 질문 강조 스타일 */
+    .question {
+      background: linear-gradient(45deg, #4d94ff, #cce0ff);
+      /* 그라데이션 배경 */
+      color: #003d7a;
+      /* 밝은 파란색 텍스트 */
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      font-weight: bold;
+      /* 굵은 텍스트 */
+    }
+
+    /* Additional Styling for a more sophisticated look */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: linear-gradient(45deg, #00264d, #003366);
+      /* 어두운 그라데이션 배경 */
+    }
+
+    form {
+      transform: translateY(20px);
+      opacity: 0;
+      animation: fadeInUp 0.6s forwards;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        transform: translateY(20px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <script>
+    Swal.fire({
+      icon: 'info',
+      title: '안녕하세요!',
+      text: ' 본 사이트는 여러분들의 학업 중단 위험 정도를 파악하고 대응 방안을 알려주는 설문조사형 프로그램입니다. 성실히 참여해주시면 감사하겠습니다!',
+      confirmButtonColor: '#0066cc',
+      confirmButtonText: '시작하기'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        showSurveyForm();
+      }
+    });
+
+    function showSurveyForm() {
+      document.getElementById('surveyForm').style.display = 'block';
+    }
+  </script>
+
+  <form id="surveyForm" action="javascript:void(0);" onsubmit="return validateForm()">
+    <h1>Survey</h1>
+
+    <!-- 질문 1 -->
+    <div class="question">
+      <label for="question1">1. 질문 1</label>
+      <select id="question1" name="question1">
+        <option value="" disabled selected>응답을 선택해주세요</option>
+        <option value="1">답변 1</option>
+        <option value="2">답변 2</option>
+        <option value="3">답변 3</option>
+        <option value="4">답변 4</option>
+        <option value="5">답변 5</option>
+      </select>
+    </div>
+
+    <!-- 질문 2 -->
+    <div class="question">
+      <label for="question2">2. 질문 2</label>
+      <select id="question2" name="question2">
+        <option value="" disabled selected>응답을 선택해주세요</option>
+        <option value="1">답변 1</option>
+        <option value="2">답변 2</option>
+        <option value="3">답변 3</option>
+        <option value="4">답변 4</option>
+        <option value="5">답변 5</option>
+      </select>
+    </div>
+
+    <div class="question">
+      <label for="question3">3. 질문 3</label>
+      <select id="question3" name="question3">
+        <option value="" disabled selected>응답을 선택해주세요</option>
+        <option value="1">답변 1</option>
+        <option value="2">답변 2</option>
+        <option value="3">답변 3</option>
+        <option value="4">답변 4</option>
+        <option value="5">답변 5</option>
+      </select>
+    </div>
+
+    <div class="question">
+      <label for="question4">4. 질문 3</label>
+      <select id="question4" name="question4">
+        <option value="" disabled selected>응답을 선택해주세요</option>
+        <option value="1">답변 1</option>
+        <option value="2">답변 2</option>
+        <option value="3">답변 3</option>
+        <option value="4">답변 4</option>
+        <option value="5">답변 5</option>
+      </select>
+    </div>
+
+    <div class="question">
+      <label for="question5">5. 질문 3</label>
+      <select id="question5" name="question5">
+        <option value="" disabled selected>응답을 선택해주세요</option>
+        <option value="1">답변 1</option>
+        <option value="2">답변 2</option>
+        <option value="3">답변 3</option>
+        <option value="4">답변 4</option>
+        <option value="5">답변 5</option>
+      </select>
+    </div>
+
+    <div class="question">
+      <label for="question6">6. 질문 3</label>
+      <select id="question6" name="question6">
+        <option value="" disabled selected>응답을 선택해주세요</option>
+        <option value="1">답변 1</option>
+        <option value="2">답변 2</option>
+        <option value="3">답변 3</option>
+        <option value="4">답변 4</option>
+        <option value="5">답변 5</option>
+      </select>
+    </div>
+
+    <div class="question">
+      <label for="question7">7. 질문 3</label>
+      <select id="question7" name="question6">
+        <option value="" disabled selected>응답을 선택해주세요</option>
+        <option value="1">답변 1</option>
+        <option value="2">답변 2</option>
+        <option value="3">답변 3</option>
+        <option value="4">답변 4</option>
+        <option value="5">답변 5</option>
+      </select>
+    </div>
+
+    <div class="question">
+      <label for="question8">8. 질문 3</label>
+      <select id="question8" name="question6">
+        <option value="" disabled selected>응답을 선택해주세요</option>
+        <option value="1">답변 1</option>
+        <option value="2">답변 2</option>
+        <option value="3">답변 3</option>
+        <option value="4">답변 4</option>
+        <option value="5">답변 5</option>
+      </select>
+    </div>
+
+    <div class="question">
+      <label for="question9">9. 질문 3</label>
+      <select id="question9" name="question6">
+        <option value="" disabled selected>응답을 선택해주세요</option>
+        <option value="1">답변 1</option>
+        <option value="2">답변 2</option>
+        <option value="3">답변 3</option>
+        <option value="4">답변 4</option>
+        <option value="5">답변 5</option>
+      </select>
+    </div>
+
+    <div class="question">
+      <label for="question10">10. 질문 3</label>
+      <select id="question10" name="question6">
+        <option value="" disabled selected>응답을 선택해주세요</option>
+        <option value="1">답변 1</option>
+        <option value="2">답변 2</option>
+        <option value="3">답변 3</option>
+        <option value="4">답변 4</option>
+        <option value="5">답변 5</option>
+      </select>
+    </div>
+
+    <div class="question">
+      <label for="question11">11. 질문 3</label>
+      <select id="question11" name="question6">
+        <option value="" disabled selected>응답을 선택해주세요</option>
+        <option value="1">답변 1</option>
+        <option value="2">답변 2</option>
+        <option value="3">답변 3</option>
+        <option value="4">답변 4</option>
+        <option value="5">답변 5</option>
+      </select>
+    </div>
+
+    <div class="question">
+      <label for="question12">12. 질문 3</label>
+      <select id="question12" name="question6">
+        <option value="" disabled selected>응답을 선택해주세요</option>
+        <option value="1">답변 1</option>
+        <option value="2">답변 2</option>
+        <option value="3">답변 3</option>
+        <option value="4">답변 4</option>
+        <option value="5">답변 5</option>
+      </select>
+    </div>
+
+    <div class="question">
+      <label for="question13">13. 질문 3</label>
+      <select id="question13" name="question6">
+        <option value="" disabled selected>응답을 선택해주세요</option>
+        <option value="1">답변 1</option>
+        <option value="2">답변 2</option>
+        <option value="3">답변 3</option>
+        <option value="4">답변 4</option>
+        <option value="5">답변 5</option>
+      </select>
+    </div>
+
+    <div class="question">
+      <label for="question14">14. 질문 3</label>
+      <select id="question14" name="question6">
+        <option value="" disabled selected>응답을 선택해주세요</option>
+        <option value="1">답변 1</option>
+        <option value="2">답변 2</option>
+        <option value="3">답변 3</option>
+        <option value="4">답변 4</option>
+        <option value="5">답변 5</option>
+      </select>
+    </div>
+
+    <div class="question">
+      <label for="question15">15. 질문 3</label>
+      <select id="question15" name="question6">
+        <option value="" disabled selected>응답을 선택해주세요</option>
+        <option value="1">답변 1</option>
+        <option value="2">답변 2</option>
+        <option value="3">답변 3</option>
+        <option value="4">답변 4</option>
+        <option value="5">답변 5</option>
+      </select>
+    </div>
+
+    <div class="question">
+      <label for="question16">16. 질문 3</label>
+      <select id="question16" name="question6">
+        <option value="" disabled selected>응답을 선택해주세요</option>
+        <option value="1">답변 1</option>
+        <option value="2">답변 2</option>
+        <option value="3">답변 3</option>
+        <option value="4">답변 4</option>
+        <option value="5">답변 5</option>
+      </select>
+    </div>
+
+    <div class="question">
+      <label for="question17">17. 질문 3</label>
+      <select id="question17" name="question6">
+        <option value="" disabled selected>응답을 선택해주세요</option>
+        <option value="1">답변 1</option>
+        <option value="2">답변 2</option>
+        <option value="3">답변 3</option>
+        <option value="4">답변 4</option>
+        <option value="5">답변 5</option>
+      </select>
+    </div>
+
+    <div class="question">
+      <label for="question18">18. 질문 3</label>
+      <select id="question18" name="question6">
+        <option value="" disabled selected>응답을 선택해주세요</option>
+        <option value="1">답변 1</option>
+        <option value="2">답변 2</option>
+        <option value="3">답변 3</option>
+        <option value="4">답변 4</option>
+        <option value="5">답변 5</option>
+      </select>
+    </div>
+
+    <div class="question">
+      <label for="question19">19. 질문 3</label>
+      <select id="question19" name="question6">
+        <option value="" disabled selected>응답을 선택해주세요</option>
+        <option value="1">답변 1</option>
+        <option value="2">답변 2</option>
+        <option value="3">답변 3</option>
+        <option value="4">답변 4</option>
+        <option value="5">답변 5</option>
+      </select>
+    </div>
+
+    <div class="question">
+      <label for="question20">20. 질문 3</label>
+      <select id="question20" name="question6">
+        <option value="" disabled selected>응답을 선택해주세요</option>
+        <option value="1">답변 1</option>
+        <option value="2">답변 2</option>
+        <option value="3">답변 3</option>
+        <option value="4">답변 4</option>
+        <option value="5">답변 5</option>
+      </select>
+    </div>
+
+    <!-- ... 질문 3부터 20까지의 코드를 추가하세요 -->
+
+    <input type="submit" value="제출">
+  </form>
+
+  <script>
+    Swal.fire({
+      icon: 'info',
+      title: '안녕하세요!',
+      text: '고급 설문조사에 참여해 주셔서 감사합니다. 아래 설문에 진심으로 답해주세요.',
+      confirmButtonColor: '#0066cc',
+      confirmButtonText: '시작하기'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        showSurveyForm();
+      }
+    });
+
+    // 설문 폼 표시 함수
+    function showSurveyForm() {
+      document.getElementById('surveyForm').style.display = 'block';
+    }
+
+
+    var { score1to5, score6to10, score11to15, score16to20 } = calculateScore();
+
+    // 점수 계산 함수
+    function calculateScore() {
+      var selects = document.getElementsByTagName("select");
+      var score1to5 = 0;
+      var score6to10 = 0;
+      var score11to15 = 0;
+      var score16to20 = 0;
+
+      for (var i = 0; i < selects.length; i++) {
+        var selectedOption = selects[i].value;
+        if (selectedOption !== "") {
+          var questionNumber = parseInt(selects[i].id.replace('question', ''));
+          if (questionNumber >= 1 && questionNumber <= 5) {
+            score1to5 += parseInt(selectedOption);
+          } else if (questionNumber >= 6 && questionNumber <= 10) {
+            score6to10 += parseInt(selectedOption);
+          } else if (questionNumber >= 11 && questionNumber <= 15) {
+            score11to15 += parseInt(selectedOption);
+          } else {
+            score16to20 += parseInt(selectedOption);
+          }
+        }
+      }
+
+      return { score1to5, score6to10, score11to15, score16to20 };
+    }
+
+    // 설문 결과 표시 함수
+    // 설문 결과 표시 함수
+    // 설문 결과 표시 함수
+    function showSurveyResult() {
+      var { score1to5, score6to10, score11to15, score16to20 } = calculateScore();
+      let additionalInfoText = '';
+
+      // SweetAlert2으로 설문 결과 표시
+      Swal.fire({
+        icon: 'success',
+        title: '설문 완료!',
+        html: '설문에 참여해 주셔서 감사합니다.' +
+          '<br>1~5 총점: ' + score1to5 + '점' +
+          '<br>6~10 총점: ' + score6to10 + '점' +
+          '<br>11~15 총점: ' + score11to15 + '점' +
+          '<br>16~20 총점: ' + score16to20 + '점',
+        confirmButtonColor: '#0066cc'
+      }).then(() => {
+        // 차트 표시 함수 호출
+        showChart(score1to5, score6to10, score11to15, score16to20).then(() => {
+          // After the chart is displayed, show additional information popups
+          showAdditionalInfo('국어').then(() => {
+            showAdditionalInfo('영어').then(() => {
+              showAdditionalInfo('수학').then(() => {
+                showAdditionalInfo('학교생활').then(() => {
+                  // Show final toast message
+                  Swal.fire({
+                    icon: 'success',
+                    title: '모든 결과를 확인했습니다.',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                  }).then(() => {
+                    // success 메시지가 나타난 후에 실행되는 부분
+                    Swal.fire({
+                      icon: 'warning',
+                      title: '구글 폼 설문조사를 참여해주세요.',
+                      toast: true,
+                      position: 'top-end',
+                      showConfirmButton: false,
+                      timer: 3000,
+                      timerProgressBar: true
+                    });
+                  });
+                });
+              });
+            });
+          });
+        });
+      });
+    }
+    // 추가 정보 표시 함수
+    function showAdditionalInfo(infoText) {
+      var { score1to5, score6to10, score11to15, score16to20 } = calculateScore();
+      let plusInfo = ''; // Initialize plusInfo variable
+    
+      // Customize the messages based on the score1to5 variable
+      if (infoText == '국어' && score1to5 <= 5) {
+        plusInfo = '점수가 낮습니다. 더 높은 점수를 향해 노력해보세요.';
+      } else if (infoText == '국어' && score1to5 <= 10) {
+        plusInfo = '보통 수준의 점수입니다. 조금 더 노력하면 좋을 것 같아요.';
+      } else if (infoText == '국어' && score1to5 <= 15) {
+        plusInfo = '높은 점수입니다. 잘하셨어요!';
+      } else if (infoText == '국어' && score1to5 <= 20) {
+        plusInfo = '더 높은 점수입니다.';
+      } else if (infoText == '국어' && score1to5 <= 25) {
+        plusInfo = '더욱 높은 점수입니다.';
+      } else if (infoText == '영어' && score6to10 <= 5) {
+        plusInfo = '영어 점수가 낮습니다. 더 높은 점수를 향해 노력해보세요.';
+      } else if (infoText == '영어' && score6to10 <= 10) {
+        plusInfo = '영어 점수가 조금 낮습니다. 조금 더 높은 점수를 향해 노력해보세요.';
+      } else if (infoText == '영어' && score6to10 <= 15) {
+        plusInfo = '영어는 보통입니다. 조금만 더 노력해도 좋을 것 같아요.';
+      } else if (infoText == '영어' && score6to10 <= 20) {
+        plusInfo = '지금 정도면 충분하지만, 조금 더 노력하면 더 나은 결과를 얻을 수 있을거에요.'
+      } else if (infoText == '영어' && score6to10 <= 25) {
+        plusInfo = '영어적 능력이 상당하시네요! 이대로만 한다면 영어에서는 상당한 역량을 발휘하실 수 있을거에요.'
+      } else if (infoText == '수학' && score11to15 <= 5) {
+        plusInfo = '수학 점수가 낮습니다. 더 높은 노릴 필요가 있겠어요.'
+      } else if (infoText == '수학' && score11to15 <= 10) {
+        plusInfo = '수학 점수가 조금 낮습니다. 조금 더 높은 점수를 노릴 필요가 있겠습니다.'
+      } else if (infoText == '수학' && score11to15 <= 15) {
+        plusInfo = '수학 점수가 보통입니다. 조금 노력하면 나아질 수 있습니다.'
+      } else if (infoText == '수학' && score11to15 <= 20) {
+        plusInfo = '수학 점수가 충분합니다. 하지만 조금만 노력한다면 더 나은 결과를 얻을 수 있을거에요.'
+      } else if (infoText == '수학' && score11to15 <= 25) {
+        plusInfo = '높은 수준의 수학적 지식을 겸비하셨네요. 이대로만 한다면 수학적인 역량은 문제 없겠어요.'
+      } else if (infoText == '학교생활' && score16to20 <= 5) {
+        plusInfo = '학교생활이 불안정합니다. 학교생활에 대한 조치가 필요할 것 같습니다.'
+      } else if (infoText == '학교생활' && score16to20 <= 10) {
+        plusInfo = '학교 생활이 조금 불안정합니다. 학교생활에 대한 조치가 조금 필요해보입니다.'
+      } else if (infoText == '학교생활' && score16to20 <= 15) {
+        plusInfo = '학교 생활에 대한 수준이 보통입니다. 약간의 조치가 필요해보입니다.'
+      } else if (infoText == '학교생활' && score16to20 <= 20) {
+        plusInfo = '학교 생활에 대한 수준이 준수한 편입니다. 조금의 노력만 하면 좋을 것 같습니다.'
+      } else if (infoText == '학교생활' && score16to20 <= 25) {
+        plusInfo = '학교 생활에 대한 인식 수준히 상당히 높네요! 이대로만 해주시면 좋겠어요.'
+      }
+    
+      return Swal.fire({
+        icon: 'info',
+        title: infoText,
+        text: plusInfo,
+        confirmButtonColor: '#0066cc',
+        confirmButtonText: '다음'
+      });
+    }
+
+
+    // 차트 표시 함수
+    // 차트 표시 함수
+    function showChart(score1to5, score6to10, score11to15, score16to20) {
+      return new Promise((resolve) => {
+        // SweetAlert2으로 차트 표시
+        Swal.fire({
+          title: '총점 막대 그래프',
+          html: '<canvas id="surveyChart" width="400" height="200"></canvas>',
+          didOpen: () => {
+            // Chart.js를 사용하여 막대 그래프 그리기
+            var ctx = document.getElementById('surveyChart').getContext('2d');
+            var myChart = new Chart(ctx, {
+              type: 'bar',
+              data: {
+                labels: ['1~5 총점', '6~10 총점', '11~15 총점', '16~20 총점'],
+                datasets: [{
+                  label: '총점',
+                  data: [score1to5, score6to10, score11to15, score16to20],
+                  backgroundColor: [
+                    '#4d94ff',
+                    '#cce0ff',
+                    '#b3e0ff',
+                    '#99c2ff'
+                  ],
+                  borderColor: [
+                    '#003d7a',
+                    '#0066cc',
+                    '#004080',
+                    '#0066cc'
+                  ],
+                  borderWidth: 1
+                }]
+              },
+              options: {
+                scales: {
+                  y: {
+                    beginAtZero: true,
+                    max: 25 // You may need to adjust this based on your score range
+                  }
+                }
+              }
+            });
+
+            // Hide the legend
+            myChart.options.plugins.legend.display = false;
+            myChart.update(); // Update the chart to apply changes
+          },
+          confirmButtonColor: '#0066cc',
+          confirmButtonText: '닫기'
+        }).then(() => {
+          resolve(); // Resolve the Promise when the SweetAlert2 is closed
+        });
+      });
+    }
+
+
+    // 폼 유효성 검사 함수
+    function validateForm() {
+      var selects = document.getElementsByTagName("select");
+
+      for (var i = 0; i < selects.length; i++) {
+        if (selects[i].value === "") {
+          Swal.fire({
+            icon: 'error',
+            title: '응답을 선택해주세요',
+            text: '모든 질문에 응답을 선택해주시면 감사하겠습니다.',
+            confirmButtonColor: '#e64a19'
+          });
+          return false;
+        }
+      }
+
+      showSurveyResult();
+      return true;
+    }
+  </script>
+</body>
+
+</html>
